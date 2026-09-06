@@ -13,10 +13,7 @@ namespace AVL_Ruben_Ibañez.Estructuras
 
         public bool EstaVacio() => raiz == null;
 
-        // ==================================================================
-        //  UTILIDADES DE ALTURA Y BALANCE
-        // ==================================================================
-
+        // Balance y altura
         private int Altura(NodoAVL? nodo) => nodo == null ? 0 : nodo.Altura;
 
         private void ActualizarAltura(NodoAVL nodo)
@@ -112,7 +109,7 @@ namespace AVL_Ruben_Ibañez.Estructuras
             else if (comparacion > 0)
                 nodo.Derecho = InsertarRec(nodo.Derecho, expediente);
             else
-                return nodo; // Duplicado (no debería llegar aquí por el chequeo previo)
+                return nodo; // Duplicado
 
             return Balancear(nodo);
         }
@@ -302,7 +299,7 @@ namespace AVL_Ruben_Ibañez.Estructuras
         }
 
         // Generacion automatica de correlativos
-        public string GenerarSiguienteCodigo()
+        public string SiguienteCorrelativo()
         {
             int mayor = 0;
             foreach (var expediente in RecorridoInorden())
