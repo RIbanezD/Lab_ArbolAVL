@@ -28,10 +28,10 @@ namespace AVL_Ruben_Ibañez.Servicios
             foreach (var exp in expedientes)
             {
                 sb.AppendLine(string.Join(",",
-                    EscaparCampo(exp.NumeroExpediente),
-                    EscaparCampo(exp.NombrePaciente),
+                    csv(exp.NumeroExpediente),
+                    csv(exp.NombrePaciente),
                     exp.Edad.ToString(),
-                    EscaparCampo(exp.TipoSangre)));
+                    csv(exp.TipoSangre)));
             }
             File.WriteAllText(ruta, sb.ToString(), Encoding.UTF8);
             return ruta;
@@ -90,7 +90,7 @@ namespace AVL_Ruben_Ibañez.Servicios
             return resultado;
         }
 
-        private static string EscaparCampo(string campo)
+        private static string csv(string campo)
         {
             if (campo.Contains(',') || campo.Contains('"'))
             {

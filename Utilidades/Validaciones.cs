@@ -23,7 +23,7 @@ namespace AVL_Ruben_Ibañez.Utilidades
             }
         }
 
-        public static int LeerEntero(string mensaje, int minimo = 0, int maximo = 130)
+        public static int LeerEntero(string mensaje, int minimo = 0, int maximo = 100)
         {
             while (true)
             {
