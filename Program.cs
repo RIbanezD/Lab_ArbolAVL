@@ -15,7 +15,7 @@ namespace AVL_Ruben_Ibañez
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             MostrarBienvenida();
-            OfrecerImportacionInicial();
+            AutoImportar();
 
             bool salir = false;
             while (!salir)
@@ -28,7 +28,7 @@ namespace AVL_Ruben_Ibañez
                 switch (opcion)
                 {
                     case "1": RegistrarExpediente(); break;
-                    case "2": MenuBuscarExpediente(); break;
+                    case "2": BuscarExpediente(); break;
                     case "3": EditarExpediente(); break;
                     case "4": EliminarExpediente(); break;
                     case "5": MenuRecorridos(); break;
@@ -46,19 +46,16 @@ namespace AVL_Ruben_Ibañez
             }
 
             AnsiConsole.Clear();
-            AnsiConsole.Write(new FigletText("¡Hasta luego!").Centered().Color(Color.SkyBlue1));
-            AnsiConsole.MarkupLine("[grey]Gracias por utilizar el Sistema de Gestión de Expedientes Médicos.[/]");
+            AnsiConsole.Write(new FigletText("Gracias por preferirnos!").Centered().Color(Color.SkyBlue1));
+            AnsiConsole.MarkupLine("[grey]Cerrando programa...[/]");
         }
 
-        /// Menú
+        // Menú
         private static void MostrarBienvenida()
         {
             AnsiConsole.Clear();
-            AnsiConsole.Write(
-                new FigletText("Hospital San Gabriel")
-                    .Centered()
-                    .Color(Color.MediumSpringGreen));
-            AnsiConsole.MarkupLine("[bold grey]         Sistema de Gestión de Expedientes Médicos — Árbol AVL[/]");
+            AnsiConsole.Write(new FigletText("Hospital San Gabriel").Centered().Color(Color.Red3_1));
+            AnsiConsole.MarkupLine("[bold grey]Sistema de Gestión de Expedientes Médicos — Árbol AVL[/]");
             AnsiConsole.WriteLine();
             Validaciones.PausarYRegresarAlMenu();
         }
@@ -72,8 +69,6 @@ namespace AVL_Ruben_Ibañez
                 Style = Style.Parse("cyan")
             };
             AnsiConsole.Write(regla);
-            var subregla = new Rule("[grey]ÁRBOL AVL[/]") { Justification = Justify.Center, Style = Style.Parse("grey") };
-            AnsiConsole.Write(subregla);
             AnsiConsole.WriteLine();
         }
 
@@ -105,8 +100,8 @@ namespace AVL_Ruben_Ibañez
             AnsiConsole.Write(new Rule("[yellow]Registro de Expediente[/]").LeftJustified());
             AnsiConsole.WriteLine();
 
-            string codigoSugerido = arbol.GenerarSiguienteCodigo();
-            AnsiConsole.MarkupLine($"[grey]Código sugerido (correlativo automático): [bold]{codigoSugerido}[/][/]");
+            string codigoSugerido = arbol.SiguienteCorrelativo();
+            AnsiConsole.MarkupLine($"[grey]Código sugerido: [bold]{codigoSugerido}[/][/]");
             bool usarSugerido = Validaciones.Confirmar("¿Desea usar el código sugerido?");
 
             string numeroExpediente = usarSugerido
@@ -115,13 +110,13 @@ namespace AVL_Ruben_Ibañez
 
             if (arbol.Buscar(numeroExpediente) != null)
             {
-                AnsiConsole.MarkupLine($"[red]Ya existe un expediente con el código {numeroExpediente}. No se permiten duplicados.[/]");
+                AnsiConsole.MarkupLine($"[red]Ya existe un expediente con el código {numeroExpediente}.[/]");
                 Validaciones.PausarYRegresarAlMenu();
                 return;
             }
 
             string nombre = Validaciones.LeerTexto("Nombre del Paciente:");
-            int edad = Validaciones.LeerEntero("Edad:", 0, 130);
+            int edad = Validaciones.LeerEntero("Edad:", 0, 100);
             string tipoSangre = Validaciones.LeerTipoSangre("Tipo de Sangre:");
 
             var expediente = new Expediente(numeroExpediente, nombre, edad, tipoSangre);
@@ -137,7 +132,7 @@ namespace AVL_Ruben_Ibañez
                 tabla.AddRow("Nombre del Paciente", nombre);
                 tabla.AddRow("Edad", $"{edad} años");
                 tabla.AddRow("Tipo de Sangre", tipoSangre);
-                AnsiConsole.MarkupLine("[bold green]Expediente registrado exitosamente. El árbol se ha rebalanceado automáticamente (de ser necesario).[/]");
+                AnsiConsole.MarkupLine("[bold green]Expediente registrado exitosamente.[/]");
                 AnsiConsole.Write(tabla);
             }
             else
@@ -149,7 +144,7 @@ namespace AVL_Ruben_Ibañez
         }
 
         // Buscar Expediente
-        private static void MenuBuscarExpediente()
+        private static void BuscarExpediente()
         {
             bool volver = false;
             while (!volver)
@@ -229,12 +224,12 @@ namespace AVL_Ruben_Ibañez
             int edadMin, edadMax;
             if (esRango)
             {
-                edadMin = Validaciones.LeerEntero("Edad mínima:", 0, 130);
-                edadMax = Validaciones.LeerEntero("Edad máxima:", edadMin, 130);
+                edadMin = Validaciones.LeerEntero("Edad mínima:", 0, 100);
+                edadMax = Validaciones.LeerEntero("Edad máxima:", edadMin, 100);
             }
             else
             {
-                edadMin = edadMax = Validaciones.LeerEntero("Edad exacta:", 0, 130);
+                edadMin = edadMax = Validaciones.LeerEntero("Edad exacta:", 0, 100);
             }
 
             List<Expediente> resultados = arbol.BuscarPorEdad(edadMin, edadMax);
@@ -250,10 +245,10 @@ namespace AVL_Ruben_Ibañez
             MostrarEncabezado();
             AnsiConsole.Write(new Rule("[yellow]Búsqueda por Nombre y/o Apellido[/]").LeftJustified());
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[grey]Puede ingresar el nombre completo, solo el nombre, solo el apellido,\no incluso una sola letra inicial para ver coincidencias.[/]");
+            AnsiConsole.MarkupLine("[grey]Puede ingresar el nombre completo, solo el nombre, solo el apellido,\no la letra inicial para ver coincidencias.[/]");
             AnsiConsole.WriteLine();
 
-            string texto = Validaciones.LeerTexto("Nombre o letra inicial a buscar:");
+            string texto = Validaciones.LeerTexto("Nombre/apellido o letra inicial a buscar:");
             List<Expediente> resultados = arbol.BuscarPorNombre(texto);
 
             AnsiConsole.WriteLine();
@@ -326,7 +321,7 @@ namespace AVL_Ruben_Ibañez
                     AnsiConsole.MarkupLine("[green]Nombre actualizado correctamente.[/]");
                     break;
                 case "2":
-                    int nuevaEdad = Validaciones.LeerEntero("Nueva edad:", 0, 130);
+                    int nuevaEdad = Validaciones.LeerEntero("Nueva edad:", 0, 100);
                     arbol.Editar(numeroExpediente, null, nuevaEdad, null);
                     AnsiConsole.MarkupLine("[green]Edad actualizada correctamente.[/]");
                     break;
@@ -524,8 +519,8 @@ namespace AVL_Ruben_Ibañez
             Validaciones.PausarYRegresarAlMenu();
         }
 
-        // Autolectura de archivo exportado/importado
-        private static void OfrecerImportacionInicial()
+        // Autolectura de archivo exportado
+        private static void AutoImportar()
         {
             if (!GestorArchivos.ExisteArchivo()) return;
 
@@ -536,7 +531,7 @@ namespace AVL_Ruben_Ibañez
             if (!importar) return;
 
             List<Expediente> importados = GestorArchivos.Importar(out List<string> errores);
-            int agregados = importados.Count(exp => arbol.Insertar(exp));
+            int agregados = importados.Count(arbol.Insertar);
 
             AnsiConsole.MarkupLine($"[green]Se importaron {agregados} expedientes automáticamente.[/]");
             Validaciones.PausarYRegresarAlMenu();
